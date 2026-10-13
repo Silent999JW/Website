@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-DATA_DIR = ROOT / "data"
+DATA_DIR = Path("/data")
 STATE_FILE = DATA_DIR / "playerwatch.json"
 PORT = int(os.environ.get("PORT", "8989"))
 VALID_THEMES = {
