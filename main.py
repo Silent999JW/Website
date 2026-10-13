@@ -1,3 +1,5 @@
+import base64
+import hmac
 import json
 import os
 import re
@@ -446,6 +448,35 @@ def fetch_inventory(user_id):
 
 
 class Handler(BaseHTTPRequestHandler):
+    def parse_request(self):
+        # Authenticate every request before any page, static file, or API route runs.
+        if not super().parse_request():
+            return False
+
+        password = os.environ.get("DASHBOARD_PASSWORD", "")
+        if not password:
+            self.send_error(503, "Dashboard password is not configured.")
+            self.close_connection = True
+            return False
+
+        expected = "Basic " + base64.b64encode(
+            f"owner:{password}".encode("utf-8")
+        ).decode("ascii")
+        supplied = self.headers.get("Authorization", "")
+        if not hmac.compare_digest(supplied, expected):
+            self.send_response(401)
+            self.send_header(
+                "WWW-Authenticate",
+                'Basic realm="Playerwatch", charset="UTF-8"',
+            )
+            self.send_header("Content-Length", "0")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.close_connection = True
+            return False
+
+        return True
+
     def send_json(self, data, status=200):
         body = json.dumps(data).encode("utf-8")
         self.send_response(status)
