@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 STATE_FILE = DATA_DIR / "playerwatch.json"
-PORT = 8989
+PORT = int(os.environ.get("PORT", "8989"))
 VALID_THEMES = {
     "aurora", "halloween", "midnight", "ocean", "sakura",
     "sunset", "forest", "cyberpunk", "arctic", "ember",
@@ -567,8 +567,8 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     presence_monitor = PresenceMonitor()
     presence_monitor.start()
-    server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
-    print(f"Roblox account dashboard: http://127.0.0.1:{PORT}")
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+    print(f"Roblox account dashboard listening on port {PORT}.")
     print(f"Watchlist and settings are saved locally in {STATE_FILE}.")
     print("Offline alerts run while this server is running; no Roblox passwords or cookies are used.")
     try:
