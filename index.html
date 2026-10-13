@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d12">
+  <title>Playerwatch — Roblox account monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Playerwatch home">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span>player<span class="brand-light">watch</span></span>
+      </a>
+      <div class="side-caption">WORKSPACE</div>
+      <button class="nav-item active" id="dashboardNav"><span class="nav-icon">◫</span> Overview <span class="nav-count" id="navCount">0</span></button>
+      <button class="nav-item" id="onlineNav"><span class="nav-icon">◉</span> Online now</button>
+      <button class="nav-item" id="favoritesNav"><span class="nav-icon">☆</span> Offline watchlist <span class="nav-count" id="favoriteCount">0</span></button>
+      <div class="side-bottom">
+        <div class="privacy-card">
+          <span class="privacy-icon">⌑</span>
+          <strong>Your list stays yours</strong>
+          <p>Accounts and settings are saved in this project. No passwords or account cookies.</p>
+        </div>
+        <div class="side-foot"><span class="live-dot"></span> LOCAL DASHBOARD <span class="mono">· 127.0.0.1</span></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong>Account monitor</strong></div>
+        <div class="top-actions">
+          <span class="updated" id="updatedAt">Waiting for first sync</span>
+          <button class="icon-btn" id="refreshButton" title="Refresh statuses" aria-label="Refresh statuses">↻</button>
+          <button class="icon-btn settings-button" id="settingsOpen" title="Settings" aria-label="Open settings">⚙</button>
+          <button class="avatar-mini" aria-label="Local profile">P</button>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow"><span class="live-dot"></span> ROBLOX ACCOUNT MONITOR</div>
+            <h1>Your accounts,<br><span>at a glance.</span></h1>
+            <p class="subtitle">A little peace of mind for your player list.</p>
+          </div>
+          <button class="primary-button" id="addOpen"><span class="plus">＋</span> Add account <span class="button-arrow">↗</span></button>
+        </div>
+
+        <section class="stats" aria-label="Account summary">
+          <article class="stat-card"><div class="stat-top"><span>TRACKING</span><span class="stat-symbol">↗</span></div><div class="stat-value" id="totalStat">00</div><div class="stat-note">accounts in your list</div></article>
+          <article class="stat-card"><div class="stat-top"><span>IN-GAME</span><span class="stat-symbol green">◉</span></div><div class="stat-value" id="ingameStat">00</div><div class="stat-note"><span class="tiny-dot green-bg"></span> playing right now</div></article>
+          <article class="stat-card"><div class="stat-top"><span>ONLINE</span><span class="stat-symbol blue">◉</span></div><div class="stat-value" id="onlineStat">00</div><div class="stat-note"><span class="tiny-dot blue-bg"></span> on the platform</div></article>
+          <article class="stat-card stat-card-accent"><div class="stat-top"><span>COLLECTIBLE RAP</span><span class="stat-symbol">✳</span></div><div class="stat-value" id="rapStat">—</div><div class="stat-note">public inventory estimates</div></article>
+        </section>
+
+        <section class="roster-section">
+          <div class="section-heading">
+            <div><div class="section-kicker">THE ROSTER</div><h2>Watched accounts <span class="heading-count" id="rosterCount">0</span></h2></div>
+            <div class="roster-tools">
+              <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search accounts..." autocomplete="off"><kbd>/</kbd></label>
+              <button class="filter-button" id="filterButton"><span>☷</span> All accounts <span class="chevron">⌄</span></button>
+              <div class="view-toggle" role="group" aria-label="Account layout">
+                <button class="view-toggle-button active" data-view="list" aria-label="List view" title="List view">☰</button>
+                <button class="view-toggle-button" data-view="grid" aria-label="Grid view" title="Grid view">▦</button>
+              </div>
+            </div>
+          </div>
+          <div class="roster-labels"><span>PLAYER</span><span>STATUS</span><span>JOINED</span><span>COLLECTIBLES</span><span>PROFILE</span><span></span></div>
+          <div id="accountList" class="account-list"></div>
+          <div id="emptyState" class="empty-state">
+            <div class="empty-graphic"><span>＋</span></div>
+            <h3>Your watchlist starts here</h3>
+            <p>Add a Roblox username or user ID to start monitoring public profile details and presence.</p>
+            <button class="secondary-button" id="emptyAdd">Add your first account <span>↗</span></button>
+          </div>
+          <div class="roster-foot"><span>STATUS CHECKS</span><span><span id="refreshStatusText">Refreshes every 60 seconds while this page is open</span> <span class="tiny-dot green-bg" id="refreshStatusDot"></span></span></div>
+        </section>
+        <footer class="footer"><span>Made for your player list <span class="heart">✳</span></span><span>Data provided by public Roblox endpoints. Availability may vary.</span></footer>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <div class="modal-icon">＋</div>
+      <div class="section-kicker">GROW YOUR ROSTER</div>
+      <h2 id="modalTitle">Add an account</h2>
+      <p class="modal-copy">Search by Roblox username or paste a numeric user ID.</p>
+      <form id="addForm">
+        <label for="usernameInput">USERNAMES OR USER IDS</label>
+        <div class="bulk-input-wrap"><textarea id="usernameInput" rows="4" maxlength="2000" placeholder="Builderman, Roblox&#10;156&#10;another_username" autocomplete="off" required></textarea></div>
+        <div class="bulk-input-help">Separate entries with commas or put one username/ID on each line. Up to 25 accounts per batch.</div>
+        <button class="bulk-submit" type="submit" id="submitButton">Add accounts <span>↗</span></button>
+      </form>
+      <div class="modal-message" id="modalMessage" role="status"></div>
+      <div class="modal-privacy">⌑ &nbsp;We only read public Roblox profile data. Never enter a password.</div>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="detailsBackdrop" aria-hidden="true">
+    <section class="modal detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+      <button class="modal-close" id="detailsClose" aria-label="Close">×</button>
+      <div id="detailsContent"></div>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="settingsBackdrop" aria-hidden="true">
+    <section class="modal settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <button class="modal-close" id="settingsClose" aria-label="Close settings">×</button>
+      <div class="modal-icon settings-icon">⚙</div>
+      <div class="section-kicker">MAKE IT YOURS</div>
+      <h2 id="settingsTitle">Appearance settings</h2>
+      <p class="modal-copy">Choose an animated gradient theme for your dashboard.</p>
+      <div class="theme-grid" id="themeGrid" role="group" aria-label="Gradient themes">
+        <button class="theme-option" data-theme="aurora"><span class="theme-swatch"></span><span>Aurora</span><span class="theme-check">✓</span></button>
+        <button class="theme-option" data-theme="halloween"><span class="theme-swatch"></span><span>Spooky season</span><span class="theme-check">✓</span></button>
+        <button class="theme-option" data-theme="midnight"><span class="theme-swatch"></span><span>Midnight</span><span class="theme-check">✓</span></button>
+        <button class="theme-option" data-theme="ocean"><span class="theme-swatch"></span><span>Deep ocean</span><span class="theme-check">✓</span></button>
+        <button class="theme-option" data-theme="sakura"><span class="theme-swatch"></span><span>Sakura</span><span class="theme-check">✓</span></button>
+        <button class="theme-option" data-theme="sunset"><span class="theme-swatch"></span><span>Sunset</span><span class="theme-check">✓</span></button>
+        <button class="theme-option" data-theme="forest"><span class="theme-swatch"></span><span>Enchanted forest</span><span class="theme-check">✓</span></button>
+        <button class="theme-option" data-theme="cyberpunk"><span class="theme-swatch"></span><span>Cyberpunk</span><span class="theme-check">✓</span></button>
+        <button class="theme-option" data-theme="arctic"><span class="theme-swatch"></span><span>Arctic glow</span><span class="theme-check">✓</span></button>
+        <button class="theme-option" data-theme="ember"><span class="theme-swatch"></span><span>Ember</span><span class="theme-check">✓</span></button>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-heading"><span class="section-kicker">ACCOUNT MONITORING</span><span>Control how often your roster checks Roblox.</span></div>
+        <div class="preference-row">
+          <span class="preference-icon">↻</span>
+          <span class="preference-copy"><strong>Automatic status checks</strong><span>Periodically update presence and check the offline alert watchlist.</span></span>
+          <label class="switch"><input id="autoRefreshToggle" type="checkbox"><span class="switch-track"></span><span class="sr-only">Automatic status checks</span></label>
+        </div>
+        <label class="preference-row" for="refreshIntervalSelect">
+          <span class="preference-icon">◷</span>
+          <span class="preference-copy"><strong>Check frequency</strong><span>More frequent checks can be rate-limited by Roblox.</span></span>
+          <select class="preference-select" id="refreshIntervalSelect">
+            <option value="15">15 seconds</option>
+            <option value="30">30 seconds</option>
+            <option value="60">1 minute</option>
+            <option value="300">5 minutes</option>
+          </select>
+        </label>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-heading"><span class="section-kicker">ROSTER DISPLAY</span><span>Make your account list work the way you like.</span></div>
+        <div class="preference-row">
+          <span class="preference-icon">#</span>
+          <span class="preference-copy"><strong>Show Roblox user IDs</strong><span>Display numeric IDs beside each username.</span></span>
+          <label class="switch"><input id="showIdsToggle" type="checkbox"><span class="switch-track"></span><span class="sr-only">Show Roblox user IDs</span></label>
+        </div>
+        <div class="preference-row">
+          <span class="preference-icon">☷</span>
+          <span class="preference-copy"><strong>Compact account rows</strong><span>Fit more watched accounts on screen.</span></span>
+          <label class="switch"><input id="compactToggle" type="checkbox"><span class="switch-track"></span><span class="sr-only">Compact account rows</span></label>
+        </div>
+        <div class="preference-row">
+          <span class="preference-icon">◌</span>
+          <span class="preference-copy"><strong>Reduce animations</strong><span>Use simpler transitions and a still gradient.</span></span>
+          <label class="switch"><input id="reduceMotionToggle" type="checkbox"><span class="switch-track"></span><span class="sr-only">Reduce animations</span></label>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-heading"><span class="section-kicker">OFFLINE ALERTS</span><span>Get a Discord message when a favorite goes offline. Alerts keep running while this local server is open.</span></div>
+        <div class="preference-row">
+          <span class="preference-icon">♡</span>
+          <span class="preference-copy"><strong>Favorite account alerts</strong><span>Only accounts starred in the roster will trigger alerts.</span></span>
+          <label class="switch"><input id="webhookEnabledToggle" type="checkbox"><span class="switch-track"></span><span class="sr-only">Enable favorite offline alerts</span></label>
+        </div>
+        <label class="webhook-field" for="webhookUrlInput"><span>DISCORD WEBHOOK URL</span><input id="webhookUrlInput" type="password" placeholder="https://discord.com/api/webhooks/…" autocomplete="off" spellcheck="false"></label>
+        <label class="webhook-field" for="webhookMentionInput"><span>USER OR ROLE TO PING <span>(optional)</span></span><input id="webhookMentionInput" type="text" maxlength="40" placeholder="e.g. &lt;@123456789012345678&gt; or &lt;@&amp;123456789012345678&gt;" autocomplete="off" spellcheck="false"></label>
+        <div class="webhook-actions"><button class="secondary-button webhook-test" id="testWebhookButton" type="button">Send test message <span>↗</span></button><span id="webhookMessage" class="webhook-message" role="status"></span></div>
+        <div class="webhook-help">Paste a Discord channel webhook URL. Enter a Discord user (<code>&lt;@ID&gt;</code>) or role (<code>&lt;@&amp;ID&gt;</code>) mention to ping; no mention means the message is silent. Keep <code>data\playerwatch.json</code> private: it contains your webhook URL.</div>
+      </div>
+      <div class="settings-note"><span class="live-dot"></span> Theme and layout preferences are saved in this browser.</div>
+    </section>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
